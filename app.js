@@ -1,10 +1,10 @@
-
 /**
  * Module dependencies.
  */
-var express = require('express')
-  , http = require('http')
-  , path = require('path');
+var express = require('express'),
+    http = require('http'),
+    path = require('path'),
+    five = require("johnny-five");
 
 var mongoose = require('mongoose');
 var app = express();
@@ -30,18 +30,66 @@ app.use(express.bodyParser());
 //Global variables
 global._MONGODB = mongoose.createConnection(mongoUrl);
 global._SCHEMA = mongoose.Schema;
+global._BOARD = new five.Board({
+    port: "/dev/tty.usbmodemfa131"
+});
 
-global._SERIALMAP = [{name: 5, port: "lokesh"},{name: 6, port: "nandani"},{name: 7, port: "sandeep"}]
+
+// Board code starts
+global._BOARD.on("ready", function () {
+    motion = new five.IR.Motion(7);
+    led = new five.Led(9);
+    led1 = new five.Led(10);
+    led2 = new five.Led(11);
+    led3 = new five.Led(3);
+
+    this.repl.inject({
+        motion: motion
+    });
+    // "calibrated" occurs once, at the beginning of a session,
+    motion.on("calibrated", function (err, ts) {
+        console.log("calibrated", ts);
+    });
+    // "motionstart" events are fired when the "calibrated"
+    // proximal area is disrupted, generally by some form of movement
+    motion.on("motionstart", function (err, ts) {
+        console.log("motionstart", ts);
+        led.on();
+        led1.on();
+        led2.on();
+    });
+    // "motionstart" events are fired following a "motionstart event
+    // when no movement has occurred in X ms
+    motion.on("motionend", function (err, ts) {
+        console.log("motionend", ts);
+        led.off();
+        led1.off();
+        led2.off();
+    });
+
+
+    http.createServer(app).listen(app.get('port'), function () {
+        console.log('Express server listening on port ' + app.get('port'));
+    });
+
+});
+// Board code ends
+global._SERIALMAP = [{
+    name: 9,
+    port: "lokesh"
+}, {
+    name: 10,
+    port: "nandani"
+}, {
+    name: 11,
+    port: "sandeep"
+}]
 
 var routes = require('./routes/exports')
 // development only
 if ('development' == app.get('env')) {
-  app.use(express.errorHandler());
+    app.use(express.errorHandler());
 }
 
 app.get('/sendStatus/:count/:bit', routes.board.sendStatus);
 app.get('/getStatus', routes.board.getStatus);
-
-http.createServer(app).listen(app.get('port'), function(){
-  console.log('Express server listening on port ' + app.get('port'));
-});
