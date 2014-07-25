@@ -30,7 +30,8 @@ if ('development' == app.get('env')) {
   app.use(express.errorHandler());
 }
 
-app.get('/', routes.board.sendStatus);
+app.get('/sendStatus/:count', routes.board.sendStatus);
+app.get('/getStatus', routes.board.getStatus);
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
