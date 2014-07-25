@@ -1,8 +1,6 @@
 var schema = require('../schema/exports.js')
-var five = require("johnny-five");
+
 var async = require("async")
-//var serie = "/dev/tty.usbmodemfa131";
-//var board = new five.Board({ port: serie });
 
 var boardSchema = {};
 boardSchema.sendStatus = function(req, res, next){
@@ -10,6 +8,7 @@ boardSchema.sendStatus = function(req, res, next){
 		var resArr = [];
 		async.eachSeries(global._SERIALMAP, function(user, next){
 			updateIndividualLights({count: user.name, bit: req.params.bit}, function(err, data){
+				turnLightOnOff(user.name, req.params.bit);
 				if(!err)
 					resArr.push(data)
 				console.log("data",data)
@@ -17,20 +16,22 @@ boardSchema.sendStatus = function(req, res, next){
 			})
 		}, function(err, data1){
 			console.log("data1",resArr)
-			res.send("data **************************");
+			res.end(JSON.stringify(returnStatus()));
+			//res.send("data **************************");
 		})
 	}else{
 		updateIndividualLights(req.params, function(err, data){
+			turnLightOnOff(req.params.count, req.params.bit);
 			if(!err)
-				res.send(data);
+				res.end(JSON.stringify(returnStatus()));
 			else
-				res.send({code: 400})
+				res.end({code: 400})
 		})	
 	}
 }	
 
 boardSchema.getStatus = function(req, res, next){
-	res.send("get status");
+	res.end(JSON.stringify(returnStatus()));
 }
 
 function updateIndividualLights(inputParams, callback){
@@ -79,5 +80,33 @@ function getMinutesBetweenDates(startDate, endDate) {
     var diff = endDate.getTime() - startDate.getTime();
     return (diff / 60000);
 }
+function turnLightOnOff(count, bit){
+	console.log('count, bit',count, bit);
+	if(count == global._SERIALMAP[0].name && bit == 0)
+		global._LED.off();
+	if(count == global._SERIALMAP[0].name && bit == 1)
+		global._LED.on();
+
+	if(count == global._SERIALMAP[1].name && bit == 0)
+		global._LED1.off();
+	if(count == global._SERIALMAP[1].name && bit == 1)
+		global._LED1.on();
+
+	if(count == global._SERIALMAP[2].name && bit == 0)
+		global._LED2.off();
+	if(count == global._SERIALMAP[2].name && bit == 1)
+		global._LED2.on();
+
+}
+function returnStatus()
+{
+  var json = {};
+
+  json[global._SERIALMAP[0].name] = global._LED.isOn;
+  json[global._SERIALMAP[1].name] = global._LED1.isOn;
+  json[global._SERIALMAP[2].name] = global._LED2.isOn;
+  return json;
+}
+
 module.exports = boardSchema;
 
