@@ -27,23 +27,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.bodyParser());
 
 
-// all environments
-app.set('port', process.env.PORT || 8000);
-app.set('views', __dirname + '/views');
-app.set('view engine', 'ejs');
-app.use(express.favicon());
-app.use(express.logger('dev'));
-app.use(express.json());
-app.use(express.urlencoded());
-app.use(express.methodOverride());
-app.use(express.multipart());
-app.use(express.cookieParser('secret key'));
-app.use(express.session());
-app.use(app.router);
-app.use(express.static(path.join(__dirname, 'public')));
-app.use(express.bodyParser());
-
-
 //Global variables
 global._MONGODB = mongoose.createConnection(mongoUrl);
 global._SCHEMA = mongoose.Schema;
