@@ -7,6 +7,10 @@
   },
   "dependencies": {
     "express": "3.2.6",
-    "ejs": "*"
+    "ejs": "*",
+    "johnny-five" : "*",
+    "serial": "*",
+    "mongoose": "*",
+    "async": "*"
   }
 }
