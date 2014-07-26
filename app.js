@@ -63,7 +63,10 @@ global._BOARD.on("ready", function () {
     var routes = require('./routes/exports');
     app.get('/sendStatus/:count/:bit', routes.board.sendStatus);
 	app.get('/getStatus', routes.board.getStatus);
-
+	
+	app.get('/getUsageData', routes.board.getUsageData);
+	app.get('/admin', routes.board.admin);
+	app.get('/getRecords', routes.board.getRecords);
     //led3 = new five.Led(3);
 
     // this.repl.inject({

@@ -1,0 +1,58 @@
+<html>
+  <head>
+    <script type="text/javascript" src="/js/google.js"></script>
+    <script type="text/javascript">
+      google.load("visualization", "1", {packages:["corechart"]});
+      google.setOnLoadCallback(drawChart);
+      function drawChart() {
+      var chartData = <%- JSON.stringify(chartData) %>;
+        var data = google.visualization.arrayToDataTable([
+          ['consumption', 'minutes'],
+          [chartData[0].username,  chartData[0].expense],
+          [chartData[1].username,  chartData[1].expense],
+          [chartData[2].username,  chartData[1].expense]
+        ]);
+
+        var options = {
+          title: 'Light Consumption',
+          hAxis: {title: 'Light Consumption', titleTextStyle: {color: 'red'},
+          'width':400,
+           'height':300}
+        };
+
+        var chart = new google.visualization.ColumnChart(document.getElementById('chart_div'));
+        chart.draw(data, options);
+        
+        
+        
+        //Pie chart
+     // Create the data table.
+        var data1 = new google.visualization.DataTable();
+        data1.addColumn('string', 'Topping');
+        data1.addColumn('number', 'Slices');
+        data1.addRows([
+          [chartData[0].username,  chartData[0].expense],
+          [chartData[1].username,  chartData[1].expense],
+          [chartData[2].username,  chartData[1].expense]
+          
+        ]);
+
+        // Set chart options
+        var options1 = {'title':'Light Consumption',
+                       'width':400,
+                       'height':300};
+
+        // Instantiate and draw our chart, passing in some options.
+        var chart1 = new google.visualization.PieChart(document.getElementById('chart_div1'));
+        chart1.draw(data1, options1);
+        
+        
+      }
+    </script>
+  </head>
+  <body>
+    <div id="chart_div" style="width: 500px; height: 500px;float:left"></div>
+    <div id="chart_div" style="width: 150px; height: 500px;float:left"></div>
+    <div id="chart_div1" style="width: 400px; height: 500px;float:left"></div>
+  </body>
+</html>

@@ -1,11 +1,50 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title><%= title %></title>
+    <title>sample</title>
     <link rel='stylesheet' href='/stylesheets/style.css' />
+    <script type="text/javascript" src="/js/jquery.js"></script>
   </head>
   <body>
-    <h1><%= title %></h1>
+    <h1>sample</h1>
     <p>Welcome to <%= title %></p>
+    <button value="led1" name="led1" onClick="sendStatus(5, 1)">1on</button>
+    <button value="led2" name="led2" onClick="sendStatus(5, 0)">10ff</button>
+    <button value="led3" name="led3" onClick="sendStatus(6, 1)">2on</button>
+    <button value="led4" name="led4" onClick="sendStatus(6, 0)">2off</button>
+    <button value="led5" name="led5" onClick="sendStatus(7, 1)">3on</button>
+    <button value="led6" name="led6" onClick="sendStatus(7, 0)">off</button>
+     <button value="allOn" name="allOn" onClick="sendStatus(all, 1)">allon</button>
+     <button value="allOff" name="allOff" onClick="sendStatus(all, 0)">allff</button>
+     <button value="status" name="status" onClick="getStatus()">status</button>
   </body>
+ <script>
+ var SERVERURL = "http://localhost:3000/"
+ function sendStatus(name, bit){
+   $.ajax({
+            url: SERVERURL+"sendStatus/" +  name + "/" + bit,
+            type: 'GET',
+            success: function(data) {
+             alert(data)
+            },
+            error: function(XMLHttpRequest, textStatus, errorThrown) { 
+                //alert("Status: " + textStatus); 
+                //alert("Error: " + errorThrown); 
+            } 
+        });
+ }
+ function getStatus(){
+ $.ajax({
+            url: SERVERURL+"getStatus",
+            type: 'GET',
+            success: function(data) {
+             alert(data)
+            },
+            error: function(XMLHttpRequest, textStatus, errorThrown) { 
+                //alert("Status: " + textStatus); 
+                //alert("Error: " + errorThrown); 
+            } 
+        });
+ }
+ </script> 
 </html>

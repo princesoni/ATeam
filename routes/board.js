@@ -14,7 +14,7 @@ boardSchema.sendStatus = function(req, res, next){
 				console.log("data",data)
 				next();
 			})
-		}, function(err, data1){
+		}, function(err){
 			console.log("data1",resArr)
 			res.end(JSON.stringify(returnStatus()));
 			//res.send("data **************************");
@@ -76,6 +76,50 @@ function updateIndividualLights(inputParams, callback){
 	});
 }
 
+boardSchema.admin = function(req, res, next){
+	res.render("index", {title: "Admin"})
+}
+
+boardSchema.getUsageData = function(req, res, next){
+	var count = 0
+	schema.statsModel.aggregate(  
+		    { $group: { _id: '$name', expense: { $sum: '$totalTime' }}}, // 'group' goes first!
+		    function(err, summary) {
+		    	async.eachSeries(summary, function(user, next){
+		    		summary[count].username = getMapData(user._id)
+		    		count++;
+					next();
+				}, function(err){
+					console.log(summary)
+					res.render('stats', {chartData: summary})
+					//res.send("data **************************");
+				})
+		        
+		    }
+		);
+	}
+
+boardSchema.getRecords = function(req, res, next){
+	console.log("insidee")
+	var count = 0
+	schema.statsModel.aggregate(  
+		    { $group: { _id: '$name', expense: { $sum: '$totalTime' }}}, // 'group' goes first!
+		    function(err, summary) {
+		    	console.log("summary",summary)
+		    	async.eachSeries(summary, function(user, next){
+		    		summary[count].username = getMapData(user._id)
+		    		count++;
+					next();
+				}, function(err){
+					console.log(summary)
+					res.json(summary)
+					//res.send("data **************************");
+				})
+		        
+		    }
+		);
+	}
+
 function getMinutesBetweenDates(startDate, endDate) {
     var diff = endDate.getTime() - startDate.getTime();
     return (diff / 60000);
@@ -98,13 +142,24 @@ function turnLightOnOff(count, bit){
 		global._LED2.on();
 
 }
+function getMapData(id){
+	if(global._SERIALMAP[0].name == id)
+		return global._SERIALMAP[0].username;
+	
+	if(global._SERIALMAP[1].name == id)
+		return global._SERIALMAP[1].username;
+	
+	if(global._SERIALMAP[2].name == id)
+		return global._SERIALMAP[2].username;
+	
+}
 function returnStatus()
 {
   var json = {};
 
   json[global._SERIALMAP[0].name] = global._LED.isOn;
   json[global._SERIALMAP[1].name] = global._LED1.isOn;
-  json[global._SERIALMAP[2].name] = global._LED2.isOn;
+  json[global._SERIALMAP[2].name] = global._LED2.isOn;  
   return json;
 }
 
