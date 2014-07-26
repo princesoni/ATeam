@@ -37,13 +37,13 @@ global._BOARD = new five.Board({
 // Board code ends
 global._SERIALMAP = [{
     name: 9,
-    port: "lokesh"
+    username: "Rohit"
 }, {
     name: 10,
-    port: "nandani"
+    username: "Nandani"
 }, {
     name: 11,
-    port: "sandeep"
+    username: "Sandeep"
 }]
 
 
@@ -69,29 +69,29 @@ global._BOARD.on("ready", function () {
 	app.get('/getRecords', routes.board.getRecords);
     //led3 = new five.Led(3);
 
-    // this.repl.inject({
-    //     motion: motion
-    // });
-    // // "calibrated" occurs once, at the beginning of a session,
-    // motion.on("calibrated", function (err, ts) {
-    //     console.log("calibrated", ts);
-    // });
-    // // "motionstart" events are fired when the "calibrated"
-    // // proximal area is disrupted, generally by some form of movement
-    // motion.on("motionstart", function (err, ts) {
-    //     console.log("motionstart", ts);
-    //     led.on();
-    //     led1.on();
-    //     led2.on();
-    // });
-    // // "motionstart" events are fired following a "motionstart event
-    // // when no movement has occurred in X ms
-    // motion.on("motionend", function (err, ts) {
-    //     console.log("motionend", ts);
-    //     led.off();
-    //     led1.off();
-    //     led2.off();
-    // });
+    /*this.repl.inject({
+        motion: motion
+    });
+    // "calibrated" occurs once, at the beginning of a session,
+    motion.on("calibrated", function (err, ts) {
+        console.log("calibrated", ts);
+    });
+    // "motionstart" events are fired when the "calibrated"
+    // proximal area is disrupted, generally by some form of movement
+    motion.on("motionstart", function (err, ts) {
+        console.log("motionstart", ts);
+        global._LED.on();
+        global._LED1.on();
+        global._LED2.on();
+    });
+    // "motionstart" events are fired following a "motionstart event
+    // when no movement has occurred in X ms
+    motion.on("motionend", function (err, ts) {
+        console.log("motionend", ts);
+        global._LED.off();
+        global._LED1.off();
+        global._LED2.off();
+    });*/
 
 
     http.createServer(app).listen(app.get('port'), function () {

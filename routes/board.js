@@ -77,7 +77,26 @@ function updateIndividualLights(inputParams, callback){
 }
 
 boardSchema.admin = function(req, res, next){
-	res.render("index", {title: "Admin"})
+	
+var count = 0
+	schema.statsModel.aggregate(  
+		    { $group: { _id: '$name', expense: { $sum: '$totalTime' }}}, // 'group' goes first!
+		    function(err, summary) {
+		    	console.log("summary",summary)
+		    	async.eachSeries(summary, function(user, next){
+		    		console.log("useruseruseruser",getMapData(user._id))
+		    		summary[count].username = getMapData(user._id)
+		    		count++;
+					next();
+				}, function(err){
+					console.log(summary)
+					res.render("admin", {records: summary})
+					//res.send("data **************************");
+				})
+		        
+		    }
+		);
+
 }
 
 boardSchema.getUsageData = function(req, res, next){
@@ -107,6 +126,7 @@ boardSchema.getRecords = function(req, res, next){
 		    function(err, summary) {
 		    	console.log("summary",summary)
 		    	async.eachSeries(summary, function(user, next){
+		    		console.log("userss",user)
 		    		summary[count].username = getMapData(user._id)
 		    		count++;
 					next();
@@ -143,13 +163,14 @@ function turnLightOnOff(count, bit){
 
 }
 function getMapData(id){
-	if(global._SERIALMAP[0].name == id)
+	console.log("ididididi",id)
+	if(global._SERIALMAP[0].name == parseInt(id))
 		return global._SERIALMAP[0].username;
 	
-	if(global._SERIALMAP[1].name == id)
+	if(global._SERIALMAP[1].name == parseInt(id))
 		return global._SERIALMAP[1].username;
 	
-	if(global._SERIALMAP[2].name == id)
+	if(global._SERIALMAP[2].name == parseInt(id))
 		return global._SERIALMAP[2].username;
 	
 }
